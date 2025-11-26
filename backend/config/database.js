@@ -10,11 +10,17 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT,
     dialect: 'postgres',
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     pool: {
       max: 5,
       min: 0,
       acquire: 30000,
-      idle: 10000
+      idle: 10000,
     }
   }
 );
@@ -22,13 +28,12 @@ const sequelize = new Sequelize(
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log('PostgreSQL ulandi');
-    
-    // Sync all models
+    console.log('PostgreSQL (Neon) ulandi');
+
     await sequelize.sync({ alter: true });
     console.log('Database sync muvaffaqiyatli');
   } catch (error) {
-    console.error('Database ulanishda xatolik bor tekshir:', error);
+    console.error('Database ulanishda xatolik:', error);
     process.exit(1);
   }
 };
